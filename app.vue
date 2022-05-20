@@ -20,23 +20,32 @@ let { data: symbols, refresh } = await useAsyncData("tickers", () =>
   })
 );
 
-symbols = await Promise.all(
-  symbols.value.map(async (sym) => {
-    const { data } = await useFetch("/api/get_p2p_price", {
-      params: { symbol: sym.symbol },
-    });
-    const p2pPrice = data.value.price;
-    return {
-      ...sym,
-      p2pPrice,
-      baseSymbol: sym.symbol.replace("AUD", ""),
-      exchangeRate: calcExchangeRate(sym, p2pPrice),
-    };
-  })
+let displayData = reactive({ symbols: [] });
+watch(
+  symbols,
+  async (newData, oldData) => {
+    displayData.symbols = await Promise.all(
+      newData.map(async (sym) => {
+        const { data } = await useFetch("/api/get_p2p_price", {
+          params: { symbol: sym.symbol },
+        });
+        const p2pPrice = data.value.price;
+        return {
+          ...sym,
+          key: sym + sym.price,
+          p2pPrice,
+          baseSymbol: sym.symbol.replace("AUD", ""),
+          exchangeRate: calcExchangeRate(sym, p2pPrice),
+        };
+      })
+    );
+    displayData.symbols = displayData.symbols.sort(
+      (a, b) => b.exchangeRate - a.exchangeRate
+    );
+  },
+  { immediate: true }
 );
-symbols.sort((a, b) => b.exchangeRate - a.exchangeRate);
 
-console.log("SYMS", symbols);
 async function refreshData() {
   console.log("Refreshing...");
   await refresh();
@@ -55,7 +64,11 @@ function calcExchangeRate({ symbol, price }, p2pPrice) {
   <div>
     <h1>Crypto symbols</h1>
     <ul>
-      <li style="list-style: none" v-for="sym in symbols" :key="sym.symbol">
+      <li
+        style="list-style: none"
+        v-for="sym in displayData.symbols"
+        :key="sym.key"
+      >
         <h3>{{ sym.baseSymbol }}</h3>
         <p>Price to buy with AUD: {{ sym.price }}</p>
         <p>Price to sell on p2p to RUB: {{ sym.p2pPrice }}</p>
