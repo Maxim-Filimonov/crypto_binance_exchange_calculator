@@ -21,7 +21,7 @@ async function getP2PPrice(symbol: string): Promise<number> {
     fiat: "RUB",
     merchantCheck: true,
     payTypes: ["Tinkoff"],
-    publisherType: null,
+    publisherType: "merchant",
     rows: 10,
     tradeType: "SELL",
     transAmount: "25000",
