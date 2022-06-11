@@ -13,19 +13,33 @@ type Response = {
 async function eventHandler(event) {
   const query = useQuery(event);
   const symbol = query.symbol?.toString() || "BTC";
-  const price = await getP2PPrice(symbol);
+  const fiat = query.fiat?.toString();
+  const quote = query.quote?.toString();
+  const price = await getP2PPrice({ symbol, fiat, quote });
 
   return {
     price: price,
   };
 }
 
-export async function getP2PPrice(symbol: string): Promise<number> {
-  const baseCurrency = symbol.replace("AUD", "");
+interface GetP2PFuncArgs {
+  symbol: string;
+  fiat?: string;
+  payTypes?: string[];
+  quote?: string;
+}
+export async function getP2PPrice({
+  symbol,
+  fiat = "RUB",
+  payTypes = [],
+  quote = "AUD",
+}: GetP2PFuncArgs): Promise<number> {
+  const baseCurrency = symbol.replace(quote, "");
+
   const postData = {
-    fiat: "RUB",
+    fiat: fiat,
     merchantCheck: true,
-    payTypes: ["Tinkoff"],
+    payTypes: payTypes,
     publisherType: "merchant",
     rows: 10,
     tradeType: "SELL",
@@ -33,6 +47,7 @@ export async function getP2PPrice(symbol: string): Promise<number> {
     page: 1,
     asset: baseCurrency,
   };
+  console.debug("Getting currency data for", postData);
   const { data } = await $fetch<Response>(
     "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search",
     {
