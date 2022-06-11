@@ -10,4 +10,8 @@ describe("Routes", async () => {
     const res = await $fetch("/");
     expect(res).toContain("Crypto");
   });
+  test("get p2p price api", async () => {
+    const res = await $fetch("/api/get_p2p_price");
+    expect(parseInt(res.price)).toBeGreaterThan(0);
+  });
 });
