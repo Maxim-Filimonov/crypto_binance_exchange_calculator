@@ -1,11 +1,5 @@
-export default defineEventHandler(async (event) => {
-  const query = useQuery(event);
-  const price = await getP2PPrice(query.symbol.toString());
-
-  return {
-    price: price,
-  };
-});
+import { defineEventHandler } from "h3";
+import { $fetch } from "ohmyfetch";
 
 type PriceData = {
   adv: {
@@ -15,7 +9,18 @@ type PriceData = {
 type Response = {
   data: PriceData[];
 };
-async function getP2PPrice(symbol: string): Promise<number> {
+
+async function eventHandler(event) {
+  const query = useQuery(event);
+  const symbol = query.symbol?.toString() || "BTC";
+  const price = await getP2PPrice(symbol);
+
+  return {
+    price: price,
+  };
+}
+
+export async function getP2PPrice(symbol: string): Promise<number> {
   const baseCurrency = symbol.replace("AUD", "");
   const postData = {
     fiat: "RUB",
@@ -38,3 +43,4 @@ async function getP2PPrice(symbol: string): Promise<number> {
   const price = data[0]["adv"]["price"];
   return price;
 }
+export default defineEventHandler(eventHandler);
