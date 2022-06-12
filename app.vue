@@ -12,15 +12,12 @@ const symbols = ref([]);
 getNewPrices({ symbols, inputData });
 
 watch(inputData, async (newData, oldData) => {
-  console.debug("INPUT CHANGED>>>>", newData, oldData);
+  console.debug("INPUT CHANGED:", newData, oldData);
   getNewPrices({ symbols, inputData });
-  // inputData.refreshHandler.value();
 });
 
 async function refreshData() {
   getNewPrices({ symbols, inputData });
-  refreshNuxtData();
-  // inputData.refreshHandler.value();
 }
 function calcExchangeRate({ symbol, price }, p2pPrice) {
   if (symbol.startsWith(inputData.quote)) {
@@ -37,7 +34,6 @@ async function getNewPrices({ symbols, inputData }) {
       fiat: inputData.fiat,
     },
   });
-  // inputData.refreshHandler.value = refresh;
   console.debug("got quotes ", tickers);
   const p2pPrices = await Promise.all(
     tickers.map(async (sym) => {
