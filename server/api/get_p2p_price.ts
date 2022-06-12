@@ -55,7 +55,10 @@ export async function getP2PPrice({
       body: postData,
     }
   );
-  const price = data[0]["adv"]["price"];
-  return price;
+  if (data.length > 0) {
+    return data[0]["adv"]["price"];
+  } else {
+    return 0;
+  }
 }
 export default defineEventHandler(eventHandler);

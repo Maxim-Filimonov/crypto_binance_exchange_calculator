@@ -23,7 +23,6 @@ async function refreshData() {
   // inputData.refreshHandler.value();
 }
 function calcExchangeRate({ symbol, price }, p2pPrice) {
-  console.log("New exchange rate for " + symbol);
   if (symbol.startsWith(inputData.quote)) {
     return price * p2pPrice;
   } else {
@@ -32,25 +31,25 @@ function calcExchangeRate({ symbol, price }, p2pPrice) {
 }
 async function getNewPrices({ symbols, inputData }) {
   symbols.value = [];
-  let { data: tickers } = await useFetch("/api/get_ticker_prices", {
+  let tickers = await $fetch("/api/get_ticker_prices", {
     params: {
       quote: inputData.quote,
       fiat: inputData.fiat,
     },
   });
   // inputData.refreshHandler.value = refresh;
-  console.debug("got quotes ", tickers.value);
+  console.debug("got quotes ", tickers);
   const p2pPrices = await Promise.all(
-    tickers.value.map(async (sym) => {
-      const { data } = await useFetch("/api/get_p2p_price", {
+    tickers.map(async (sym) => {
+      const data = await $fetch("/api/get_p2p_price", {
         params: {
           symbol: sym.symbol,
           quote: inputData.quote,
           fiat: inputData.fiat,
         },
       });
-      console.debug("Get result", data.value);
-      const p2pPrice = data.value.price;
+      console.debug("Get result", data);
+      const p2pPrice = data.price;
       return {
         ...sym,
         key: sym + sym.price,
