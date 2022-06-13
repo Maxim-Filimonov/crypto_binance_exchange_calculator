@@ -66,7 +66,7 @@ async function getNewPrices({ symbols, inputData }) {
       <select v-model="inputData.quote">
         <option>AUD</option>
         <option>GBP</option>
-        <!-- <option>USDC</option> -->
+        <option>USDC</option>
         <option>IDRT</option>
         <option>BIDR</option>
         <option>BRL</option>
@@ -87,18 +87,16 @@ async function getNewPrices({ symbols, inputData }) {
       <select v-model="inputData.fiat">
         <option>AUD</option>
         <option>GBP</option>
-        <!-- <option>USDC</option> -->
+        <option>USD</option>
+        <option>EUR</option>
+        <option>RUB</option>
         <option>IDRT</option>
         <option>BIDR</option>
         <option>BRL</option>
-        <option>RUB</option>
         <option>TRY</option>
         <option>DAI</option>
         <option>UAH</option>
         <option>NGN</option>
-        <!-- <option>USDP</option> -->
-        <option>EUR</option>
-        <!-- <option>TUSD</option> -->
         <option>VAI</option>
       </select>
     </label>

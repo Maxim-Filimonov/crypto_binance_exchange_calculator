@@ -66,18 +66,21 @@ async function getP2PCurrenciesTocheck({ quote, fiat }) {
     .find((x) => x.area === "P2P")
     .tradeSides.find((x) => x.side === "SELL")
     .assets.map((x) => x.asset);
-  // const p2pCryptos = ["BTC", "ETH", "SHIB", "BNB"];
-  // const p2pStable = ["BUSD", "USDT"];
-  // let p2pSymbolsToCheck = [...p2pCryptos, ...p2pStable];
   console.debug("P2P Symbols to check");
   const binanceData = await $fetch<BinanceExchangeInfo>(
     "https://api.binance.com/api/v1/exchangeInfo"
   );
   const baseTradingPairs = binanceData.symbols.filter(
-    (x) => x.quoteAsset === quote && p2pSymbolsToCheck.includes(x.baseAsset)
+    (x) =>
+      x.quoteAsset === quote &&
+      p2pSymbolsToCheck.includes(x.baseAsset) &&
+      x.status === "TRADING"
   );
   const quoteTradingPairs = binanceData.symbols.filter(
-    (x) => x.baseAsset === quote && p2pSymbolsToCheck.includes(x.quoteAsset)
+    (x) =>
+      x.baseAsset === quote &&
+      p2pSymbolsToCheck.includes(x.quoteAsset) &&
+      x.status === "TRADING"
   );
 
   const pairsToCheck = [...baseTradingPairs, ...quoteTradingPairs]
