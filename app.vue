@@ -7,6 +7,39 @@ const inputData = reactive({
   fiat: DEFAULT_FIAT,
 });
 
+const currenciesData = {
+  buying: [
+    "AUD",
+    "GBP",
+    "USDC",
+    "IDRT",
+    "BIDR",
+    "BRL",
+    "RUB",
+    "TRY",
+    "DAI",
+    "UAH",
+    "NGN",
+    "EUR",
+    "VAI",
+  ],
+  selling: [
+    "AUD",
+    "GBP",
+    "USDC",
+    "IDRT",
+    "BIDR",
+    "BRL",
+    "RUB",
+    "TRY",
+    "DAI",
+    "UAH",
+    "NGN",
+    "EUR",
+    "VAI",
+  ],
+};
+
 const symbols = ref([]);
 
 getNewPrices({ symbols, inputData });
@@ -57,51 +90,30 @@ async function getNewPrices({ symbols, inputData }) {
   );
   symbols.value = p2pPrices.sort((a, b) => b.exchangeRate - a.exchangeRate);
 }
+
+const people = [
+  { id: 1, name: "Durward Reynolds", unavailable: false },
+  { id: 2, name: "Kenton Towne", unavailable: false },
+  { id: 3, name: "Therese Wunsch", unavailable: false },
+  { id: 4, name: "Benedict Kessler", unavailable: true },
+  { id: 5, name: "Katelyn Rohan", unavailable: false },
+];
+const selectedPerson = ref(people[0]);
 </script>
 <template>
-  <div>
-    <h1>Crypto Fiat Exchange</h1>
-    <label>
-      Buying crypto with:
-      <select v-model="inputData.quote">
-        <option>AUD</option>
-        <option>GBP</option>
-        <option>USDC</option>
-        <option>IDRT</option>
-        <option>BIDR</option>
-        <option>BRL</option>
-        <option>RUB</option>
-        <option>TRY</option>
-        <option>DAI</option>
-        <option>UAH</option>
-        <option>NGN</option>
-        <!-- <option>USDP</option> -->
-        <option>EUR</option>
-        <!-- <option>TUSD</option> -->
-        <option>VAI</option>
-      </select>
-    </label>
-    <br />
-    <label>
-      Selling crypto to:
-      <select v-model="inputData.fiat">
-        <option>AUD</option>
-        <option>GBP</option>
-        <option>USD</option>
-        <option>EUR</option>
-        <option>RUB</option>
-        <option>IDRT</option>
-        <option>BIDR</option>
-        <option>BRL</option>
-        <option>TRY</option>
-        <option>DAI</option>
-        <option>UAH</option>
-        <option>NGN</option>
-        <option>VAI</option>
-      </select>
-    </label>
-    <br />
-    <button @click="refreshData">Refresh Data</button>
+  <div class="bg-gray-100 h-screen p-6">
+    <header class="_text:center">
+      <h1>Exchange Currency via Crypto</h1>
+    </header>
+    <form>
+      <CurrencySelector
+        :selectedModel="inputData.quote"
+        :selectedDisplay="inputData.quote"
+        :options="currenciesData.buying"
+      />
+
+      <button @click="refreshData">Refresh Data</button>
+    </form>
 
     <h2 v-if="symbols.length === 0">Loading...</h2>
     <ul>

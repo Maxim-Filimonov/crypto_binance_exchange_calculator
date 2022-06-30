@@ -31,19 +31,19 @@ interface GetP2PFuncArgs {
 export async function getP2PPrice({
   symbol,
   fiat = "RUB",
-  payTypes = [],
+  // payTypes = [],
+  payTypes = ["Tinkoff"],
   quote = "AUD",
 }: GetP2PFuncArgs): Promise<number> {
   const baseCurrency = symbol.replace(quote, "");
 
   const postData = {
     fiat: fiat,
-    merchantCheck: true,
     payTypes: payTypes,
     publisherType: "merchant",
     rows: 10,
     tradeType: "SELL",
-    transAmount: "25000",
+    transAmount: "41000",
     page: 1,
     asset: baseCurrency,
   };
