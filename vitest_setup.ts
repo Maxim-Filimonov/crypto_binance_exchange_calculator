@@ -1,14 +1,14 @@
+import { Pact } from "@pact-foundation/pact";
 import { afterAll, afterEach, beforeAll } from "vitest";
-import { setupServer } from "msw/node";
-import { restHandlers } from "./mocks/handlers";
+global.provider = new Pact({
+  consumer: "fiat-exchange",
+  provider: process.env.PACT_PROVIDER ? process.env.PACT_PROVIDER : "binance",
+});
 
-const server = setupServer(...restHandlers);
-
-// Start server before all tests
-beforeAll(() => server.listen({ onUnhandledRequest: "warn" }));
-
-//  Close server after all tests
-afterAll(() => server.close());
-
-// Reset handlers after each test `important for test isolation`
-afterEach(() => server.resetHandlers());
+beforeAll(async () => {
+  await global.provider.setup();
+});
+afterEach(async () => {
+  await global.provider.verify();
+});
+afterAll(() => global.provider.finalize());
