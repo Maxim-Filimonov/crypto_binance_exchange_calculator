@@ -1,0 +1,8 @@
+services:
+  fake_binance:
+    image: pactfoundation/pact-stub-server
+    ports:
+      - "8080"
+    volumes:
+      - ./pacts/:/app/pacts
+    command: "-p 8080 -d pacts"
