@@ -27,12 +27,15 @@ interface GetP2PFuncArgs {
   fiat?: string;
   payTypes?: string[];
   quote?: string;
+  baseApi?: string;
 }
 export async function getP2PPrice({
   symbol,
   fiat = "RUB",
+  // payTypes = ["Tinkoff"],
   payTypes = [],
   quote = "AUD",
+  baseApi = "https://p2p.binance.com",
 }: GetP2PFuncArgs): Promise<number> {
   const baseCurrency = symbol.replace(quote, "");
 
@@ -48,13 +51,15 @@ export async function getP2PPrice({
     asset: baseCurrency,
   };
   console.debug("Getting currency data for", postData);
+
   const { data } = await $fetch<Response>(
-    "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search",
+    `${baseApi}/bapi/c2c/v2/friendly/c2c/adv/search`,
     {
       method: "POST",
       body: postData,
     }
   );
+
   if (data.length > 0) {
     return data[0]["adv"]["price"];
   } else {
