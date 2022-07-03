@@ -12,6 +12,7 @@ interface ComponentProps {
   options: string[];
 }
 const props = defineProps<ComponentProps>();
+defineEmits();
 </script>
 <template>
   <Listbox v-model="selectedModel">
